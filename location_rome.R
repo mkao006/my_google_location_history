@@ -2,7 +2,7 @@ library(RJSONIO)
 library(ggplot2)
 library(ggmap)
 library(maps)
-
+library(MASS)
 
 ## You can download your own locatoin history from
 ## https://www.google.com/settings/takeout after signing in.
@@ -23,6 +23,12 @@ timeStamp =
 ## Extract logitude and latitude
 latitude = sapply(locationHistory[[1]], FUN = function(x) x$latitudeE7)
 longitude = sapply(locationHistory[[1]], FUN = function(x) x$longitudeE7)
+
+## create data frame
+myLocations.df =
+    data.frame(timeStamp = timeStamp,
+               longitude = longitude/10000000,
+               latitude = latitude/10000000)
 
 
 ## Extract my location within the map of Rome
@@ -58,3 +64,5 @@ m = ggmap(mapRome) +
   geom_contour(data = densdf,
                aes(x = lon, y = lat, z = z^(1/4)), bins = 8, size = 1)
 m
+
+ggsave("rome_location.png")
